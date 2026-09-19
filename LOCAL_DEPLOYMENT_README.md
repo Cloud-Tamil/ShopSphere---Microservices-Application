@@ -109,10 +109,10 @@ shopsphere-prometheus   prom/prometheus:v2.50.0           Up                    
 | Interface | Local URL | Description / Notes |
 | :--- | :--- | :--- |
 | **Web Storefront** | [http://localhost:3000](http://localhost:3000) | Main e-commerce shop UI (browse, add to cart, checkout, view orders) |
-| **API Gateway** | [http://localhost:8000](http://localhost:8000) | Root API endpoint (routes to downstream services) |
+| **API Gateway** | [http://localhost:8000](http://localhost:8000) | Root API endpoint (Welcome, service metadata & route discovery) |
 | **Gateway Health** | [http://localhost:8000/health](http://localhost:8000/health) | Real-time health check & downstream service ping statuses |
 | **Prometheus UI** | [http://localhost:9090](http://localhost:9090) | Query metrics (e.g. `shopsphere_gateway_requests_total`) |
-| **Catalog Endpoint**| [http://localhost:8000/api/orders/products](http://localhost:8000/api/orders/products) | Public product catalog JSON |
+| **Catalog Endpoint**| [http://localhost:8000/api/orders/products](http://localhost:8000/api/orders/products) | Public product catalog JSON (also accessible at `/api/order/products` or `/products`) |
 | **Prometheus Metrics**| [http://localhost:8000/metrics](http://localhost:8000/metrics) | Live Prometheus text metrics exported by API Gateway |
 
 ### Pre-Seeded / Default Test Accounts

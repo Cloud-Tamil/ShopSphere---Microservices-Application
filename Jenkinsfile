@@ -29,27 +29,27 @@ pipeline {
             parallel {
                 stage('Gateway Deps') {
                     steps {
-                        dir('api-gateway') { sh 'npm ci' }
+                        dir('api-gateway') { sh 'if [ -f package-lock.json ]; then npm ci; else npm install; fi' }
                     }
                 }
                 stage('Auth Deps') {
                     steps {
-                        dir('auth-service') { sh 'npm ci' }
+                        dir('auth-service') { sh 'if [ -f package-lock.json ]; then npm ci; else npm install; fi' }
                     }
                 }
                 stage('User Deps') {
                     steps {
-                        dir('user-service') { sh 'npm ci' }
+                        dir('user-service') { sh 'if [ -f package-lock.json ]; then npm ci; else npm install; fi' }
                     }
                 }
                 stage('Order Deps') {
                     steps {
-                        dir('order-service') { sh 'npm ci' }
+                        dir('order-service') { sh 'if [ -f package-lock.json ]; then npm ci; else npm install; fi' }
                     }
                 }
                 stage('Frontend Deps') {
                     steps {
-                        dir('frontend') { sh 'npm ci' }
+                        dir('frontend') { sh 'if [ -f package-lock.json ]; then npm ci; else npm install; fi' }
                     }
                 }
             }

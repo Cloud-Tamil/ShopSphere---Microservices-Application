@@ -172,22 +172,72 @@ const createServiceProxy = (target, pathRewrite, requireAuth = false) => {
   return requireAuth ? [authenticateToken, proxy] : [proxy];
 };
 
+// Root Endpoint (Welcome & API Discovery)
+app.get('/', (req, res) => {
+  res.status(200).json({
+    service: 'ShopSphere API Gateway',
+    status: 'UP',
+    version: '1.0.0',
+    description: 'Central API Gateway routing to ShopSphere microservices',
+    availableEndpoints: {
+      root: '/',
+      health: '/health',
+      readiness: '/ready',
+      metrics: '/metrics',
+      productsCatalog: '/api/orders/products',
+      productsCatalogAlias: '/api/order/products',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        me: 'GET /api/auth/me'
+      },
+      users: {
+        profile: 'GET /api/users/profile',
+        updateProfile: 'PUT /api/users/profile'
+      },
+      orders: {
+        list: 'GET /api/orders',
+        create: 'POST /api/orders',
+        products: 'GET /api/orders/products'
+      }
+    }
+  });
+});
+
+// Direct products shortcut
+app.get('/products', (req, res) => {
+  res.redirect('/api/orders/products');
+});
+
 // --- Proxy Routing Rules ---
 // 1. Auth Service Routes (/api/auth/* -> /*)
 app.use('/api/auth', ...createServiceProxy(AUTH_SERVICE_URL, { '^/api/auth': '' }, false));
 
-// 2. User Service Routes (/api/users/* -> /*)
+// 2. User Service Routes (support both plural /api/users and singular /api/user)
 app.use('/api/users', ...createServiceProxy(USER_SERVICE_URL, { '^/api/users': '' }, false));
+app.use('/api/user', ...createServiceProxy(USER_SERVICE_URL, { '^/api/user': '' }, false));
 
-// 3. Order Service Routes (/api/orders/* -> /*)
+// 3. Order Service Routes (support both plural /api/orders and singular /api/order, plus /api/products)
 app.use('/api/orders', ...createServiceProxy(ORDER_SERVICE_URL, { '^/api/orders': '' }, false));
+app.use('/api/order', ...createServiceProxy(ORDER_SERVICE_URL, { '^/api/order': '' }, false));
+app.use('/api/products', ...createServiceProxy(ORDER_SERVICE_URL, { '^/api': '' }, false));
 
 // 404 Fallback
 app.use('*', (req, res) => {
   res.status(404).json({
     error: 'Route Not Found',
     path: req.originalUrl,
-    availableRoutes: ['/api/auth/*', '/api/users/*', '/api/orders/*', '/health', '/metrics']
+    availableRoutes: [
+      '/',
+      '/health',
+      '/ready',
+      '/metrics',
+      '/api/orders/products',
+      '/api/order/products',
+      '/api/auth/*',
+      '/api/users/*',
+      '/api/orders/*'
+    ]
   });
 });
 

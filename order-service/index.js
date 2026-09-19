@@ -222,7 +222,7 @@ app.get('/ready', (req, res) => {
 });
 
 // --- Products Endpoints ---
-app.get('/products', async (req, res) => {
+app.get(['/products', '/orders/products', '/order/products'], async (req, res) => {
   try {
     const { category, search } = req.query;
     const filter = {};
@@ -240,7 +240,7 @@ app.get('/products', async (req, res) => {
   }
 });
 
-app.get('/products/:id', async (req, res) => {
+app.get(['/products/:id', '/orders/products/:id', '/order/products/:id'], async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
