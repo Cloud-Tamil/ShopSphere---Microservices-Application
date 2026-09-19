@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shopsphere-config
+  namespace: shopsphere
+  labels:
+    app.kubernetes.io/part-of: shopsphere
+data:
+  NODE_ENV: "production"
+  PORT_GATEWAY: "8000"
+  PORT_AUTH: "5001"
+  PORT_USER: "5002"
+  PORT_ORDER: "5003"
+  AUTH_SERVICE_URL: "http://auth-service.shopsphere.svc.cluster.local:5001"
+  USER_SERVICE_URL: "http://user-service.shopsphere.svc.cluster.local:5002"
+  ORDER_SERVICE_URL: "http://order-service.shopsphere.svc.cluster.local:5003"
+  CORS_ORIGIN: "*"

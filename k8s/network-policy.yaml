@@ -1,0 +1,101 @@
+# Default Deny All Ingress in Namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: shopsphere
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# Allow Ingress to Frontend from Ingress Controller / External
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-ingress
+  namespace: shopsphere
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 80
+  policyTypes:
+    - Ingress
+---
+# Allow Ingress to API Gateway from Ingress Controller & Frontend Pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-ingress
+  namespace: shopsphere
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8000
+    - ports:
+        - protocol: TCP
+          port: 8000
+  policyTypes:
+    - Ingress
+---
+# Allow Ingress to Microservices ONLY from API Gateway
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-microservices-from-gateway
+  namespace: shopsphere
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values: ["auth-service", "user-service", "order-service"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api-gateway
+      ports:
+        - protocol: TCP
+          port: 5001
+        - protocol: TCP
+          port: 5002
+        - protocol: TCP
+          port: 5003
+  policyTypes:
+    - Ingress
+---
+# Allow Ingress to MongoDB ONLY from Auth, User, and Order Services
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-mongo-from-services
+  namespace: shopsphere
+spec:
+  podSelector:
+    matchLabels:
+      app: mongo
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values: ["auth-service", "user-service", "order-service"]
+      ports:
+        - protocol: TCP
+          port: 27017
+  policyTypes:
+    - Ingress

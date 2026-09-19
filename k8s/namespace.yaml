@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shopsphere
+  labels:
+    app.kubernetes.io/name: shopsphere
+    app.kubernetes.io/part-of: shopsphere-platform
+    environment: production

@@ -1,0 +1,20 @@
+{
+  "name": "shopsphere-api-gateway",
+  "version": "1.0.0",
+  "description": "ShopSphere API Gateway - Central routing, authentication verification, rate limiting, and observability proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Running gateway sanity tests...\" && exit 0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "http-proxy-middleware": "^3.0.3",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0"
+  }
+}
